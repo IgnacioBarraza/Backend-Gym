@@ -78,8 +78,8 @@ npm install
 3. Crea un archivo `.env` con tu configuración:
 
 ```env
-PORT=3000
-MONGO_URI=mongodb://localhost:27017
+PORT=5000
+MONGO_URI=<mongodb://mongo_uri>
 DB_NAME=gymapp
 JWT_SECRET=tu_clave_secreta
 ```
