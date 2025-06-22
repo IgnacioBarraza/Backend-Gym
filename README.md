@@ -41,9 +41,7 @@ src/
 │   └── token.ts
 │   └── validators.ts
 │
-├── app.ts              # Configuración principal de la app Express
-├── server.ts           # Punto de entrada del servidor
-└── types/              # Tipos globales (si los necesitas)
+├── index.ts              # Punto de entrada principal de la app Express
 ```
 
 ---
