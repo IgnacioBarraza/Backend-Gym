@@ -1,6 +1,6 @@
-import mongoose from "mongoose";
+import mongoose from "mongoose"
 
-const exerciseSchema = new mongoose.Schema({
+const machineSchema = new mongoose.Schema({
   name: {
     type: String,
     required: true,
@@ -9,10 +9,6 @@ const exerciseSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  caloriesBurned: {
-    type: Number,
-    required: true,
-  },
-});
+})
 
-const Excercise = mongoose.model("Exercise", exerciseSchema);
+export const Machine = mongoose.model("Machine", machineSchema)
