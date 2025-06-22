@@ -9,6 +9,9 @@ export class MachineController {
       const machines = await getAllMachines()
       sendResponse(req, res, machines, 200)
     } catch (error) {
+      if (error instanceof CustomError) {
+        next(new CustomError(error.message, error.statusCode, error.errors))
+      }
       next(new CustomError("Internal server error", 500, [error]))
     }
   }
