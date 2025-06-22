@@ -12,3 +12,6 @@ machineRouter.post("/", machineController.createMachine)
 
 // Update an existing machine:
 machineRouter.patch("/:id", machineController.updateMachine)
+
+// Remove an existing machine:
+machineRouter.delete("/:id", machineController.deleteMachine)

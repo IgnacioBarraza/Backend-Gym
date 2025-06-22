@@ -1,6 +1,6 @@
 import { Request } from "express";
 import { CustomError } from "../middlewares/errorHandler";
-import { createNewMachine, getAll, updateMachineById } from "../repositories/machine.repo";
+import { createNewMachine, existsMachine, getAll, updateMachineById } from "../repositories/machine.repo";
 import { MachineSchema, UpdateMachineSchema } from "../utils/machineValidator";
 
 export const getAllMachines = async () => {
@@ -36,4 +36,14 @@ export const updateMachine = async (req: Request) => {
 
   const updatedMachine = await updateMachineById(req.params.id, parse.data)
   return updatedMachine
+}
+
+export const deleteMachine = async (req: Request) => {
+  const exists = existsMachine(req.params.id)
+  
+  if (!exists) {
+    throw new CustomError("Máquina no encontrada", 400, ["Máquina no encontrada"])
+  }
+
+  return exists
 }

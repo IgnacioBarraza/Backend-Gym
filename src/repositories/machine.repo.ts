@@ -14,6 +14,10 @@ export const createNewMachine = async ({ name, description }: MachineInterface )
   return await newMachine.save()
 }
 
+export const existsMachine = (id: string): boolean => {
+  return !!Machine.findById(id)
+}
+
 export const updateMachineById = async (id: string, { name, description }: Partial<MachineInterface>) => {
   const updatedMachine = await Machine.updateOne({ _id: id }, {
     $set: {
@@ -23,4 +27,10 @@ export const updateMachineById = async (id: string, { name, description }: Parti
   })
 
   return updatedMachine
+}
+
+export const deleteMachineById = async (id: string) => {
+  return Machine.deleteOne({
+    _id: id
+  })
 }
