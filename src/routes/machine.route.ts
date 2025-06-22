@@ -9,3 +9,6 @@ machineRouter.get("/", machineController.getMachines)
 
 // Create a new machine:
 machineRouter.post("/", machineController.createMachine)
+
+// Update an existing machine:
+machineRouter.patch("/:id", machineController.updateMachine)
