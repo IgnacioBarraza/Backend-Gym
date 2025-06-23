@@ -2,7 +2,7 @@ import { Request } from "express";
 import { CustomError } from "../middlewares/errorHandler";
 import { createNewMachine, deleteMachineById, existsMachine, getAll, updateMachineById } from "../repositories/machine.repo";
 import { MachineSchema, UpdateMachineSchema } from "../utils/machineValidator";
-import mongoose from "mongoose";
+import mongoose, { Types } from "mongoose";
 
 export const getAllMachines = async () => {
   const data = await getAll();
@@ -28,11 +28,15 @@ export const createMachine = async (req: Request) => {
 }
 
 export const updateMachine = async (req: Request) => {
-  if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
+  const { id } = req.params
+
+  if (!mongoose.Types.ObjectId.isValid(id)) {
     throw new CustomError("Id inválida", 400, ["Id inválida"])
   }
 
-  const exists = existsMachine(req.params.id)
+  const objectId = new Types.ObjectId(id)
+
+  const exists = existsMachine(objectId)
 
   if (!exists) {
     throw new CustomError("Máquina no encontrada", 404, ["Máquina no encontrada"])
@@ -45,21 +49,25 @@ export const updateMachine = async (req: Request) => {
     throw new CustomError("Error de validación", 400, message)
   }
 
-  const updatedMachine = await updateMachineById(req.params.id, parse.data)
+  const updatedMachine = await updateMachineById(objectId, parse.data)
   return updatedMachine
 }
 
 export const deleteMachine = async (req: Request) => {
-  if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
+  const { id } = req.params
+
+  if (!mongoose.Types.ObjectId.isValid(id)) {
     throw new CustomError("Id inválida", 400, ["Id inválida"])
   }
 
-  const exists = await existsMachine(req.params.id)
+  const objectId = new Types.ObjectId(id)
+
+  const exists = await existsMachine(objectId)
   
   if (!exists) {
     throw new CustomError("Máquina no encontrada", 400, ["Máquina no encontrada"])
   }
 
-  const result = await deleteMachineById(req.params.id)
+  const result = await deleteMachineById(id)
   return result
 }

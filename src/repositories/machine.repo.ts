@@ -1,25 +1,23 @@
-import { Machine } from "../models/Machine"
+import { Types } from "mongoose";
+import { Machine, MachineInterface } from "../models/Machine"
 
 export const getAll = async () => {
   return await Machine.find();
 }
 
-interface MachineInterface {
-  name: string,
-  description: string
-}
+export const createNewMachine = async (data: MachineInterface ) => {
+  const { name, description } = data
 
-export const createNewMachine = async ({ name, description }: MachineInterface ) => {
   const newMachine = new Machine({ name, description })
   return await newMachine.save()
 }
 
-export const existsMachine = async (id: string): Promise<boolean> => {
+export const existsMachine = async (id: Types.ObjectId): Promise<boolean> => {
   const result = await Machine.exists({ _id: id })
   return Boolean(result)
 }
 
-export const updateMachineById = async (id: string, { name, description }: Partial<MachineInterface>) => {
+export const updateMachineById = async (id: Types.ObjectId, { name, description }: Partial<MachineInterface>) => {
   const updatedMachine = await Machine.updateOne({ _id: id }, {
     $set: {
       name: name,

@@ -1,5 +1,10 @@
 import mongoose from "mongoose"
 
+export interface MachineInterface {
+    name: string,
+    description: string,
+}
+
 const machineSchema = new mongoose.Schema({
   name: {
     type: String,
@@ -12,7 +17,6 @@ const machineSchema = new mongoose.Schema({
 }, {
   toJSON: {
     transform: (_doc, ret) => {
-      ret.id = ret._id
       delete ret.id
       delete ret.__v
       return ret

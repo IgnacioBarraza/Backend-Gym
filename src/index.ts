@@ -24,7 +24,7 @@ app.use(json())
 app.use('/healthy', (req: Request, res: Response) => {
   sendResponse(req, res, 'Server up!', 200)
 })
-app.use("/machines", machineRouter)
+app.use("/api/machines", machineRouter)
 
 /**
  * Middlewares
