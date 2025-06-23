@@ -14,8 +14,9 @@ export const createNewMachine = async ({ name, description }: MachineInterface )
   return await newMachine.save()
 }
 
-export const existsMachine = (id: string): boolean => {
-  return !!Machine.findById(id)
+export const existsMachine = async (id: string): Promise<boolean> => {
+  const result = await Machine.exists({ _id: id })
+  return Boolean(result)
 }
 
 export const updateMachineById = async (id: string, { name, description }: Partial<MachineInterface>) => {
