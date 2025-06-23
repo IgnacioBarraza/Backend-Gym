@@ -17,7 +17,9 @@ export const existsMachine = async (id: Types.ObjectId): Promise<boolean> => {
   return Boolean(result)
 }
 
-export const updateMachineById = async (id: Types.ObjectId, { name, description }: Partial<MachineInterface>) => {
+export const updateMachineById = async (id: Types.ObjectId, data: Partial<MachineInterface>) => {
+  const { name, description } = data
+  
   const updatedMachine = await Machine.updateOne({ _id: id }, {
     $set: {
       name: name,
