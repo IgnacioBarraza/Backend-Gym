@@ -2,6 +2,7 @@ import { Request } from "express";
 import { CustomError } from "../middlewares/errorHandler";
 import { createNewMachine, deleteMachineById, existsMachine, getAll, updateMachineById } from "../repositories/machine.repo";
 import { MachineSchema, UpdateMachineSchema } from "../utils/machineValidator";
+import mongoose from "mongoose";
 
 export const getAllMachines = async () => {
   const data = await getAll();
@@ -27,6 +28,10 @@ export const createMachine = async (req: Request) => {
 }
 
 export const updateMachine = async (req: Request) => {
+  if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
+    throw new CustomError("Id inválida", 400, ["Id inválida"])
+  }
+
   const exists = existsMachine(req.params.id)
 
   if (!exists) {
@@ -45,6 +50,10 @@ export const updateMachine = async (req: Request) => {
 }
 
 export const deleteMachine = async (req: Request) => {
+  if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
+    throw new CustomError("Id inválida", 400, ["Id inválida"])
+  }
+
   const exists = await existsMachine(req.params.id)
   
   if (!exists) {

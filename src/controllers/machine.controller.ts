@@ -11,6 +11,7 @@ export class MachineController {
     } catch (error) {
       if (error instanceof CustomError) {
         next(new CustomError(error.message, error.statusCode, error.errors))
+        return
       }
       next(new CustomError("Internal server error", 500, [error]))
     }
@@ -23,6 +24,7 @@ export class MachineController {
     } catch (error) {
       if (error instanceof CustomError) {
         next(new CustomError(error.message, error.statusCode, error.errors))
+        return
       }
       next(new CustomError("Internal server error", 500, [error]))
     }
@@ -35,6 +37,7 @@ export class MachineController {
     } catch (error) {
       if (error instanceof CustomError) {
         next(new CustomError(error.message, error.statusCode, error.errors))
+        return
       }
       next(new CustomError("Internal server error", 500, [error]))
     }
@@ -47,6 +50,7 @@ export class MachineController {
     } catch (error) {
       if (error instanceof CustomError) {
         next(new CustomError(error.message, error.statusCode, error.errors))
+        return
       }
       next(new CustomError("Internal server error", 500, [error]))
     }
