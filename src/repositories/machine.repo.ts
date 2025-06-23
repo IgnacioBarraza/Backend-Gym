@@ -30,7 +30,7 @@ export const updateMachineById = async (id: Types.ObjectId, data: Partial<Machin
   return updatedMachine
 }
 
-export const deleteMachineById = async (id: string) => {
+export const deleteMachineById = async (id: Types.ObjectId) => {
   return Machine.deleteOne({
     _id: id
   })

@@ -68,6 +68,6 @@ export const deleteMachine = async (req: Request) => {
     throw new CustomError("Máquina no encontrada", 400, ["Máquina no encontrada"])
   }
 
-  const result = await deleteMachineById(id)
+  const result = await deleteMachineById(objectId)
   return result
 }
