@@ -11,3 +11,6 @@ export const UpdateMachineSchema = z.object({
 })
   .partial()
   .strict()
+  .refine((data) => Object.keys(data).length > 0, {
+    message: "You should at least provide one field to update"
+  })
