@@ -17,7 +17,8 @@ const machineSchema = new mongoose.Schema({
 }, {
   toJSON: {
     transform: (_doc, ret) => {
-      delete ret.id
+      ret.id = ret._id
+      delete ret._id
       delete ret.__v
       return ret
     }
