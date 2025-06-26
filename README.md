@@ -41,7 +41,7 @@ src/
 │   └── token.ts
 │   └── validators.ts
 │
-├── index.ts              # Punto de entrada principal de la app Express
+├── index.ts            # Punto de entrada principal de la app Express
 ```
 
 ---

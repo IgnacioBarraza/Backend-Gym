@@ -5,7 +5,7 @@ export const getAll = async () =>  {
   return await UserModel.find()
 }
 
-export const getByEmail = async (email: string) => {
+export const getUserByEmail = async (email: string) => {
   return await UserModel.findOne({ email })
 }
 
@@ -16,4 +16,10 @@ export const register = async (data: IUser) => {
 
 export const deleteUserById = async (id: Types.ObjectId) => {
   return await UserModel.deleteOne({ _id: id })
+}
+
+export const login = async (email: string, password: string) => {
+  return await UserModel.findOne({
+    email, password
+  })
 }
