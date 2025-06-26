@@ -12,7 +12,7 @@ export class UserController {
     const data = req.body
     try {
       const user = await registerUser(data)
-      sendResponse(req, res, user, 200)
+      sendResponse(req, res, { token: user }, 200)
     } catch (error) {
       next(new CustomError('Internal server error', 500, [error]))
     }
@@ -26,7 +26,7 @@ export class UserController {
     const { email, password } = req.body
     try {
       const user = await login(email, password)
-      sendResponse(req, res, user, 200)
+      sendResponse(req, res, { token: user }, 200)
     } catch (error) {
       next(new CustomError('Internal server error', 500, [error]))
     }
