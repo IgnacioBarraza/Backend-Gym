@@ -1,8 +1,9 @@
-import { Request } from "express";
 import { CustomError } from "../middlewares/errorHandler";
 import { createNewMachine, deleteMachineById, existsMachine, getAll, updateMachineById } from "../repositories/machine.repo";
 import { MachineSchema, UpdateMachineSchema } from "../utils/machineValidator";
 import mongoose, { Types } from "mongoose";
+import { MachineInterface } from "../models/Machine";
+import { ParamsDictionary } from "express-serve-static-core";
 
 export const getAllMachines = async () => {
   const data = await getAll();
@@ -14,8 +15,8 @@ export const getAllMachines = async () => {
   return data;
 }
 
-export const createMachine = async (req: Request) => {
-  const parsedData = MachineSchema.safeParse(req.body)
+export const createMachine = async (body: MachineInterface) => {
+  const parsedData = MachineSchema.safeParse(body)
 
   if (!parsedData.success) {
     const message = parsedData.error.issues.map((issue) => issue.message)
@@ -24,12 +25,11 @@ export const createMachine = async (req: Request) => {
   }
 
   const newMachine = await createNewMachine(parsedData.data)
+  console.log(newMachine)
   return newMachine
 }
 
-export const updateMachine = async (req: Request) => {
-  const { id } = req.params
-
+export const updateMachine = async (body: Partial<MachineInterface>, id: string) => {
   if (!mongoose.Types.ObjectId.isValid(id)) {
     throw new CustomError("Id inválida", 400, ["Id inválida"])
   }
@@ -42,7 +42,7 @@ export const updateMachine = async (req: Request) => {
     throw new CustomError("Máquina no encontrada", 404, ["Máquina no encontrada"])
   }
 
-  const parse = UpdateMachineSchema.safeParse(req.body)
+  const parse = UpdateMachineSchema.safeParse(body)
 
   if (!parse.success) {
     const message = parse.error.issues.map((issues) => issues.message)
@@ -53,9 +53,7 @@ export const updateMachine = async (req: Request) => {
   return updatedMachine
 }
 
-export const deleteMachine = async (req: Request) => {
-  const { id } = req.params
-
+export const deleteMachine = async (id: string) => {
   if (!mongoose.Types.ObjectId.isValid(id)) {
     throw new CustomError("Id inválida", 400, ["Id inválida"])
   }

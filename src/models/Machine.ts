@@ -1,8 +1,8 @@
 import mongoose from "mongoose"
 
 export interface MachineInterface {
-    name: string,
-    description: string,
+  name: string,
+  description: string,
 }
 
 const machineSchema = new mongoose.Schema({
