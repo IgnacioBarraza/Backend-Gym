@@ -19,7 +19,7 @@ export class MachineController {
 
   public createMachine = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const newMachine = await createMachine(req)
+      const newMachine = await createMachine(req.body)
       sendResponse(req, res, newMachine, 201)
     } catch (error) {
       if (error instanceof CustomError) {
@@ -32,7 +32,7 @@ export class MachineController {
 
   public updateMachine = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const result = await updateMachine(req)
+      const result = await updateMachine(req.body, req.params)
       sendResponse(req, res, result, 204)
     } catch (error) {
       if (error instanceof CustomError) {
@@ -45,7 +45,7 @@ export class MachineController {
 
   public deleteMachine = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const result = await deleteMachine(req)
+      const result = await deleteMachine(req.params)
       sendResponse(req, res, result, 204)
     } catch (error) {
       if (error instanceof CustomError) {
