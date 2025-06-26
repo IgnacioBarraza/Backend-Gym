@@ -28,9 +28,7 @@ export const createMachine = async (body: MachineInterface) => {
   return newMachine
 }
 
-export const updateMachine = async (body: Partial<MachineInterface>, params: ParamsDictionary) => {
-  const { id } = params
-
+export const updateMachine = async (body: Partial<MachineInterface>, id: string) => {
   if (!mongoose.Types.ObjectId.isValid(id)) {
     throw new CustomError("Id inválida", 400, ["Id inválida"])
   }
@@ -54,9 +52,7 @@ export const updateMachine = async (body: Partial<MachineInterface>, params: Par
   return updatedMachine
 }
 
-export const deleteMachine = async (params: ParamsDictionary) => {
-  const { id } = params
-
+export const deleteMachine = async (id: string) => {
   if (!mongoose.Types.ObjectId.isValid(id)) {
     throw new CustomError("Id inválida", 400, ["Id inválida"])
   }
