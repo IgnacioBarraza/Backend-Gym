@@ -25,6 +25,7 @@ export const createMachine = async (body: MachineInterface) => {
   }
 
   const newMachine = await createNewMachine(parsedData.data)
+  console.log(newMachine)
   return newMachine
 }
 
