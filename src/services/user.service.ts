@@ -1,14 +1,16 @@
+import { Types } from "mongoose"
 import { envConfig } from "../config/env"
 import { CustomError } from "../middlewares/errorHandler"
-import { IUserProp } from "../models/User"
-import { getAll, getUserByEmail, register } from "../repositories/user.repo"
+import { IUser, IUserDto } from "../models/interfaces/UserInterface"
+import { deleteUserById, getAll, getUserByEmail, register } from "../repositories/user.repo"
 import { UserValidator } from "../validators/userValidator"
 import bcrypt from 'bcrypt'
 import jwt from 'jsonwebtoken'
+import { UserModel } from "../models/User"
 
 const salt = 10
 
-export const getAllUsers = async () => {
+export const getAllUsers = async (): Promise<IUser[]> => {
   const users = await getAll()
 
   if (users.length === 0) throw new CustomError('Users not found', 404, ['No se han encontrado usuarios'])
@@ -16,7 +18,7 @@ export const getAllUsers = async () => {
   return users
 }
 
-export const getByEmail = async (email: string) => {
+export const getByEmail = async (email: string): Promise<IUser> => {
   const user = await getUserByEmail(email)
 
   if (!user) throw new CustomError('User not found', 404, ['Usuario no encontrado'])
@@ -24,7 +26,7 @@ export const getByEmail = async (email: string) => {
   return user
 }
 
-export const registerUser = async (data: IUserProp) => {
+export const registerUser = async (data: IUserDto) => {
   const parsedData = UserValidator.safeParse(data)
   if (!parsedData.success) throw new CustomError('Invalid form', 400, parsedData.error)
 
@@ -62,4 +64,12 @@ export const login = async (email: string, password: string) => {
   )
 
   return token
+}
+
+export const deleteUser = async (id: string) => {
+  if (!Types.ObjectId.isValid(id)) throw new CustomError('Invalid ID', 500, ['ID no valida'])
+
+  const objectId = new Types.ObjectId(id)
+  
+  await deleteUserById(objectId)
 }
