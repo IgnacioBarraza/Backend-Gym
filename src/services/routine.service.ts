@@ -61,6 +61,13 @@ export const updateRoutine = async (data: Partial<RoutineInterface>, id: string)
     throw new CustomError("Error de validación", 400, message)
   }
 
+  const idsToValidate = [parseData.data.user_id, parseData.data.exercise_id].filter(Boolean) as string[]
+  const invalidIds = mongoIdValidator(idsToValidate)
+  
+  if (invalidIds.length !== 0) {
+    throw new CustomError("Id inválida", 400, invalidIds)
+  }
+
   const parsedDataId = {
     name: parseData.data.name,
     description: parseData.data.description,
