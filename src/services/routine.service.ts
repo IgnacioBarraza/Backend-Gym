@@ -23,7 +23,7 @@ export const createRoutine = async (data: RoutineInterface) => {
     throw new CustomError("Error de validación", 400, message)
   }
 
-  const newRoutine = await createNewRoutine(data)
+  const newRoutine = await createNewRoutine(parseData.data)
   return newRoutine
 }
 

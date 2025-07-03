@@ -6,23 +6,20 @@ const objectIdSchema = z
   .refine(val => Types.ObjectId.isValid(val),{ message: "Invalid ObjectId" })
   .transform(val => new Types.ObjectId(val))
 
-export const RoutineSchema = z.object({
-  name: z.string().min(1, "Routine name is required!"),
-  description: z.string().min(1, "Routine description is required"),
-  user_id: z.string().refine(val => {
-    return Types.ObjectId.isValid(val)
-  }),
-  exercise_id: z.string().refine(val => {
-    return Types.ObjectId.isValid(val)
+export const RoutineSchema = z
+  .object({
+    name: z.string().min(1, "Routine name is required!"),
+    description: z.string().min(1, "Routine description is required"),
+    user_id: objectIdSchema,
+    exercise_id: objectIdSchema,
   })
-})
 
 export const UpdateRoutineSchema = z
   .object({
     name: z.string().min(1, "Routine name is required!"),
     description: z.string().min(1, "Routine description is required"),
-    user_id: objectIdSchema.optional(),
-    exercise_id: objectIdSchema.optional(),
+    user_id: objectIdSchema,
+    exercise_id: objectIdSchema,
   })
   .partial()
   .strict()
