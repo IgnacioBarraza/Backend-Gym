@@ -6,6 +6,7 @@ import morgan from 'morgan'
 import { CustomError, errorHandler } from './middlewares/errorHandler'
 import { ConnectDB } from './config/db'
 import { machineRouter } from './routes/machine.route'
+import { routineRouter } from './routes/routine.route'
 
 const app = express()
 
@@ -25,6 +26,7 @@ app.use('/healthy', (req: Request, res: Response) => {
   sendResponse(req, res, 'Server up!', 200)
 })
 app.use("/api/machines", machineRouter)
+app.use("/api/routines", routineRouter)
 
 /**
  * Middlewares
