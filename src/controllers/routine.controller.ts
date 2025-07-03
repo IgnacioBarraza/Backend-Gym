@@ -35,7 +35,7 @@ export class RoutineController {
       const { id } = req.params
 
       const result = await updateRoutine(req.body, id)
-      sendResponse(req, res, result, 200)
+      sendResponse(req, res, result, 204)
     } catch (error) {
       if (error instanceof CustomError) {
         next(new CustomError(error.message, error.statusCode, error.errors))
@@ -50,7 +50,7 @@ export class RoutineController {
       const { id } = req.params
 
       const result = await removeRoutine(id)
-      sendResponse(req, res, result, 200)
+      sendResponse(req, res, result, 204)
     } catch (error) {
       if (error instanceof CustomError) {
         next(new CustomError(error.message, error.statusCode, error.errors))

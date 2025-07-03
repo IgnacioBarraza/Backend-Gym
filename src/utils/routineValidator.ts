@@ -1,25 +1,20 @@
 import { Types } from "mongoose";
 import z from "zod/v4";
 
-const objectIdSchema = z
-  .string()
-  .refine(val => Types.ObjectId.isValid(val),{ message: "Invalid ObjectId" })
-  .transform(val => new Types.ObjectId(val))
-
 export const RoutineSchema = z
   .object({
-    name: z.string().min(1, "Routine name is required!"),
-    description: z.string().min(1, "Routine description is required"),
-    user_id: objectIdSchema,
-    exercise_id: objectIdSchema,
+    name: z.string(),
+    description: z.string(),
+    user_id: z.string(),
+    exercise_id: z.string(),
   })
 
 export const UpdateRoutineSchema = z
   .object({
-    name: z.string().min(1, "Routine name is required!"),
-    description: z.string().min(1, "Routine description is required"),
-    user_id: objectIdSchema,
-    exercise_id: objectIdSchema,
+    name: z.string(),
+    description: z.string(),
+    user_id: z.string(),
+    exercise_id: z.string(),
   })
   .partial()
   .strict()

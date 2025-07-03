@@ -11,7 +11,7 @@ routineRouter.get("/", routineController.getRoutines)
 routineRouter.post("/", routineController.createRoutine)
 
 // Update a routine:
-routineRouter.patch("/", routineController.updateRoutine)
+routineRouter.patch("/:id", routineController.updateRoutine)
 
 // Delete a routine:
-routineRouter.patch("/", routineController.deleteRoutine)
+routineRouter.patch("/:id", routineController.deleteRoutine)

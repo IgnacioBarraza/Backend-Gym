@@ -3,6 +3,7 @@ import { createNewRoutine, deleteRoutineById, existsRoutine, getAll, updateRouti
 import { RoutineSchema, UpdateRoutineSchema } from "../utils/routineValidator"
 import { RoutineInterface } from "../models/Routine"
 import mongoose, { Types } from "mongoose"
+import { mongoIdValidator } from "../utils/mongoIdValidator"
 
 export const getAllRoutines = async () => {
   const data = await getAll()
@@ -23,7 +24,20 @@ export const createRoutine = async (data: RoutineInterface) => {
     throw new CustomError("Error de validación", 400, message)
   }
 
-  const newRoutine = await createNewRoutine(parseData.data)
+  const invalidIds = mongoIdValidator([parseData.data.user_id, parseData.data.exercise_id])
+
+  if (invalidIds.length > 0) {
+    throw new CustomError("Invalid ids: " + invalidIds, 400, invalidIds)
+  }
+
+  const parsedDataId = {
+    name: parseData.data.name,
+    description: parseData.data.description,
+    user_id: new Types.ObjectId(parseData.data.user_id),
+    exercise_id: new Types.ObjectId(parseData.data.exercise_id)
+  }
+
+  const newRoutine = await createNewRoutine(parsedDataId)
   return newRoutine
 }
 
@@ -34,7 +48,7 @@ export const updateRoutine = async (data: Partial<RoutineInterface>, id: string)
 
   const objectId = new Types.ObjectId(id)
 
-  const exists = existsRoutine(objectId)
+  const exists = await existsRoutine(objectId)
 
   if (!exists) {
     throw new CustomError("Rutina no encontrada", 400, ["Rutina no encontrada"])
@@ -47,7 +61,18 @@ export const updateRoutine = async (data: Partial<RoutineInterface>, id: string)
     throw new CustomError("Error de validación", 400, message)
   }
 
-  const result = await updateRoutineById(objectId, parseData.data)
+  const parsedDataId = {
+    name: parseData.data.name,
+    description: parseData.data.description,
+    user_id: parseData.data.user_id
+      ? new Types.ObjectId(parseData.data.user_id)
+      : undefined,
+    exercise_id: parseData.data.exercise_id
+      ? new Types.ObjectId(parseData.data.exercise_id)
+      : undefined,
+  }
+
+  const result = await updateRoutineById(objectId, parsedDataId)
   return result
 }
 
