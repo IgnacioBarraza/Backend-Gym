@@ -1,6 +1,6 @@
 import { MachineController } from "../../controllers/machine.controller"
 import { mockNext, mockRequest, mockResponse } from "../../test_utils/__mock__/mockHelpers"
-import { getAllMachines } from "../../services/machine.service"
+import { createMachine, getAllMachines } from "../../services/machine.service"
 import { CustomError } from "../../middlewares/errorHandler"
 
 jest.mock("../../services/machine.service")
@@ -42,6 +42,46 @@ describe("get machines", () => {
     const next = jest.fn()
 
     await machineController.getMachines(mockRequest, mockResponse, next)
+
+    expect(next).toHaveBeenCalledWith(unexpectedError)
+    
+  })
+})
+
+describe("create machines", () => {
+  it("should create a machine and return 201 status code", async () => {
+    const mockResult = { name: "Run machine", description: "machine to run", id: 1 };
+    (createMachine as jest.Mock).mockResolvedValue(mockResult)
+
+    const machineController = new MachineController()
+    const next = jest.fn()
+
+    await machineController.createMachine(mockRequest, mockResponse, next)
+
+    expect(mockResponse.status).toHaveBeenCalledWith(201)
+    expect(mockResponse.send).toHaveBeenCalledWith(mockResult)
+  })
+
+  it("should return validation error if parsed data throws error", async () => {
+    const validationError = new CustomError("Error de validación", 400, ["Name is required"]);
+    (createMachine as jest.Mock).mockRejectedValue(validationError)
+
+    const machineController = new MachineController()
+    const next = jest.fn()
+
+    await machineController.createMachine(mockRequest, mockResponse, next)
+
+    expect(next).toHaveBeenCalledWith(validationError)
+  })
+
+  it("should return internal server error if unexpected error appears", async () => {
+    const unexpectedError = new Error("Internal server error");
+    (createMachine as jest.Mock).mockRejectedValue(unexpectedError)
+
+    const machineController = new MachineController()
+    const next = jest.fn()
+
+    await machineController.createMachine(mockRequest, mockResponse, next)
 
     expect(next).toHaveBeenCalledWith(unexpectedError)
   })
