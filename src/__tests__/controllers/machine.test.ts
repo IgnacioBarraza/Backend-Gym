@@ -1,5 +1,5 @@
 import { MachineController } from "../../controllers/machine.controller"
-import { mockNext, mockRequest, mockResponse } from "../../test_utils/__mock__/mockHelpers"
+import { mockRequest, mockResponse } from "../../test_utils/__mock__/mockHelpers"
 import { createMachine, deleteMachine, getAllMachines, updateMachine } from "../../services/machine.service"
 import { CustomError } from "../../middlewares/errorHandler"
 
@@ -15,11 +15,13 @@ describe("get machines", () => {
     (getAllMachines as jest.Mock).mockResolvedValue(mockMachines)
 
     const machineController = new MachineController()
+    const next = jest.fn()
 
-    await machineController.getMachines(mockRequest, mockResponse, mockNext)
+    await machineController.getMachines(mockRequest, mockResponse, next)
 
     expect(mockResponse.status).toHaveBeenCalledWith(200)
     expect(mockResponse.send).toHaveBeenCalledWith(mockMachines)
+    expect(next).not.toHaveBeenCalled()
   })
 
   it("should return error message if no machines are found", async () => {
@@ -32,6 +34,8 @@ describe("get machines", () => {
     await machineController.getMachines(mockRequest, mockResponse, next)
 
     expect(next).toHaveBeenCalledWith(customError)
+    expect(next.mock.calls[0][0].statusCode).toBe(404)
+    expect(next.mock.calls[0][0].message).toBe("No se han encontrado máquinas")
   })
 
   it("should return internal server error to any other error", async () => {
@@ -44,7 +48,8 @@ describe("get machines", () => {
     await machineController.getMachines(mockRequest, mockResponse, next)
 
     expect(next).toHaveBeenCalledWith(unexpectedError)
-    
+    expect(next.mock.calls[0][0].statusCode).toBe(500)
+    expect(next.mock.calls[0][0].message).toBe("Internal server error")
   })
 })
 
@@ -60,6 +65,7 @@ describe("create machines", () => {
 
     expect(mockResponse.status).toHaveBeenCalledWith(201)
     expect(mockResponse.send).toHaveBeenCalledWith(mockResult)
+    expect(next).not.toHaveBeenCalled()
   })
 
   it("should return validation error if parsed data throws error", async () => {
@@ -72,6 +78,8 @@ describe("create machines", () => {
     await machineController.createMachine(mockRequest, mockResponse, next)
 
     expect(next).toHaveBeenCalledWith(validationError)
+    expect(next.mock.calls[0][0].statusCode).toBe(400)
+    expect(next.mock.calls[0][0].message).toBe("Error de validación")
   })
 
   it("should return internal server error if unexpected error appears", async () => {
@@ -84,6 +92,8 @@ describe("create machines", () => {
     await machineController.createMachine(mockRequest, mockResponse, next)
 
     expect(next).toHaveBeenCalledWith(unexpectedError)
+    expect(next.mock.calls[0][0].statusCode).toBe(500)
+    expect(next.mock.calls[0][0].message).toBe("Internal server error")
   })
 })
 
@@ -149,6 +159,20 @@ describe("update machine", () => {
     expect(next.mock.calls[0][0].statusCode).toBe(400)
     expect(next.mock.calls[0][0].message).toBe("Error de validación")
   })
+
+  it("should return internal server error to any other error", async () => {
+    const error = new Error("Internal server error");
+    (updateMachine as jest.Mock).mockRejectedValue(error)
+
+    const machineController = new MachineController()
+    const next = jest.fn()
+
+    await machineController.updateMachine(mockRequest, mockResponse, next)
+
+    expect(next).toHaveBeenCalledWith(error)
+    expect(next.mock.calls[0][0].statusCode).toBe(500)
+    expect(next.mock.calls[0][0].message).toBe("Internal server error")
+  })
 })
 
 describe("delete machine", () => {
@@ -191,5 +215,19 @@ describe("delete machine", () => {
     expect(next).toHaveBeenCalledWith(customError)
     expect(next.mock.calls[0][0].statusCode).toBe(400)
     expect(next.mock.calls[0][0].message).toBe("Máquina no encontrada")
+  })
+
+  it("should return internal server error to any other error", async () => {
+    const error = new Error("Internal server error");
+    (deleteMachine as jest.Mock).mockRejectedValue(error)
+
+    const machineController = new MachineController()
+    const next = jest.fn()
+
+    await machineController.deleteMachine(mockRequest, mockResponse, next)
+
+    expect(next).toHaveBeenCalledWith(error)
+    expect(next.mock.calls[0][0].statusCode).toBe(500)
+    expect(next.mock.calls[0][0].message).toBe("Internal server error")
   })
 })
