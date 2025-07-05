@@ -1,6 +1,6 @@
 import { MachineController } from "../../controllers/machine.controller"
 import { mockNext, mockRequest, mockResponse } from "../../test_utils/__mock__/mockHelpers"
-import { createMachine, getAllMachines, updateMachine } from "../../services/machine.service"
+import { createMachine, deleteMachine, getAllMachines, updateMachine } from "../../services/machine.service"
 import { CustomError } from "../../middlewares/errorHandler"
 
 jest.mock("../../services/machine.service")
@@ -148,5 +148,48 @@ describe("update machine", () => {
     expect(next).toHaveBeenCalledWith(customError)
     expect(next.mock.calls[0][0].statusCode).toBe(400)
     expect(next.mock.calls[0][0].message).toBe("Error de validación")
+  })
+})
+
+describe("delete machine", () => {
+  it("returns 204 and no content", async () => {
+    (deleteMachine as jest.Mock).mockResolvedValue({})
+
+    const machineController = new MachineController()
+    const next = jest.fn()
+
+    await machineController.deleteMachine(mockRequest, mockResponse, next)
+
+    expect(mockResponse.status).toHaveBeenCalledWith(204)
+    expect(mockResponse.send).toHaveBeenCalled()
+    expect(next).not.toHaveBeenCalled()
+  })
+
+  it("should return error 400 when invalid id", async () => {
+    const customError = new CustomError("Id inválida", 400, ["Id inválida"]);
+    (deleteMachine as jest.Mock).mockRejectedValue(customError)
+
+    const machineController = new MachineController()
+    const next = jest.fn()
+
+    await machineController.deleteMachine(mockRequest, mockResponse, next)
+
+    expect(next).toHaveBeenCalledWith(customError)
+    expect(next.mock.calls[0][0].statusCode).toBe(400)
+    expect(next.mock.calls[0][0].message).toBe("Id inválida")
+  })
+
+  it("should return error 400 when machine not found", async () => {
+    const customError = new CustomError("Máquina no encontrada", 400, ["Máquina no encontrada"]);
+    (deleteMachine as jest.Mock).mockRejectedValue(customError)
+
+    const machineController = new MachineController()
+    const next = jest.fn()
+
+    await machineController.deleteMachine(mockRequest, mockResponse, next)
+
+    expect(next).toHaveBeenCalledWith(customError)
+    expect(next.mock.calls[0][0].statusCode).toBe(400)
+    expect(next.mock.calls[0][0].message).toBe("Máquina no encontrada")
   })
 })
