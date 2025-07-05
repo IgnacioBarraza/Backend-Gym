@@ -1,6 +1,6 @@
 import { MachineController } from "../../controllers/machine.controller"
 import { mockNext, mockRequest, mockResponse } from "../../test_utils/__mock__/mockHelpers"
-import { createMachine, getAllMachines } from "../../services/machine.service"
+import { createMachine, getAllMachines, updateMachine } from "../../services/machine.service"
 import { CustomError } from "../../middlewares/errorHandler"
 
 jest.mock("../../services/machine.service")
@@ -84,5 +84,69 @@ describe("create machines", () => {
     await machineController.createMachine(mockRequest, mockResponse, next)
 
     expect(next).toHaveBeenCalledWith(unexpectedError)
+  })
+})
+
+describe("update machine", () => {
+  it("should return 204 and no content", async () => {
+    (updateMachine as jest.Mock).mockResolvedValue({})
+
+    const machineController = new MachineController()
+
+    const req = {
+      ...mockRequest,
+      body: { name: "new name" },
+      params: { id: "6866a269dd63a07f2b8fb2bb" }
+    }
+
+    const next = jest.fn()
+
+    await machineController.updateMachine(req as any, mockResponse, next)
+
+    expect(mockResponse.status).toHaveBeenCalledWith(204)
+    expect(mockResponse.send).toHaveBeenCalled()
+    expect(next).not.toHaveBeenCalled()
+  })
+
+  it("should return error 400 when passing invalid id", async () => {
+    const customError = new CustomError("Id inválida", 400, ["Id inválida"]);
+    (updateMachine as jest.Mock).mockRejectedValue(customError)
+
+    const machineController = new MachineController()
+    const next = jest.fn()
+
+    await machineController.updateMachine(mockRequest, mockResponse, next)
+
+    expect(next).toHaveBeenCalledWith(customError)
+    expect(next.mock.calls[0][0].statusCode).toBe(400)
+    expect(next.mock.calls[0][0].message).toBe("Id inválida")
+  })
+
+  it("should return error 404 when no machine matchs the id", async () => {
+    const customError = new CustomError("Máquina no encontrada", 404, ["Máquina no encontrada"]);
+    (updateMachine as jest.Mock).mockRejectedValue(customError)
+
+    const machineController = new MachineController()
+    const next = jest.fn()
+
+    await machineController.updateMachine(mockRequest, mockResponse, next)
+
+    expect(next).toHaveBeenCalledWith(customError)
+    expect(next.mock.calls[0][0].statusCode).toBe(404)
+    expect(next.mock.calls[0][0].message).toBe("Máquina no encontrada")
+  })
+
+  it("should return error 400 when passing invalid data", async () => {
+    const customError = new CustomError("Error de validación", 400, []);
+    (updateMachine as jest.Mock).mockRejectedValue(customError)
+
+    const machineController = new MachineController()
+    const next = jest.fn()
+
+    await machineController.updateMachine(mockRequest, mockResponse, next)
+
+    expect(next).toHaveBeenCalledWith(customError)
+    expect(next.mock.calls[0][0].statusCode).toBe(400)
+    expect(next.mock.calls[0][0].message).toBe("Error de validación")
   })
 })
